@@ -43,7 +43,7 @@ final class TestProxyRequestHandler
 {
     private final OkHttpClient httpClient = new OkHttpClient();
     private final MockWebServer mockTrinoServer = new MockWebServer();
-    private PostgreSQLContainer postgresql;
+    private final PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16");
 
     private final int routerPort = 21001 + (int) (Math.random() * 1000);
     private final int customBackendPort = 21000 + (int) (Math.random() * 1000);
@@ -80,7 +80,6 @@ final class TestProxyRequestHandler
             }
         });
 
-        postgresql = new PostgreSQLContainer("postgres:16");
         postgresql.start();
 
         HaGatewayTestUtils.TestConfig testConfig = buildGatewayConfig(routerPort, "test-config-template.yml", postgresql);

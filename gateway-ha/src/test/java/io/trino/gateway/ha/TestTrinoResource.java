@@ -47,7 +47,7 @@ final class TestTrinoResource
 {
     private static final OkHttpClient httpClient = new OkHttpClient();
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private PostgreSQLContainer postgresql;
+    private final PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16");
 
     int routerPort = 22000 + (int) (Math.random() * 1000);
     JdbcConnectionManager connectionManager;
@@ -57,7 +57,6 @@ final class TestTrinoResource
     void setup()
             throws Exception
     {
-        postgresql = new PostgreSQLContainer("postgres:16");
         postgresql.start();
         // Prepare config and database tables
         HaGatewayTestUtils.TestConfig testConfig =
@@ -69,12 +68,10 @@ final class TestTrinoResource
         connectionManager = new JdbcConnectionManager(jdbi, db);
         resourceGroupManager = new HaResourceGroupsManager(connectionManager);
 
-        // need to start gateway so migrations will be run to create tables
-        // before inserting test data
+        // Start Trino Gateway so migrations are run to create tables before inserting test data
         String[] args = {testConfig.configFilePath()};
         HaGatewayLauncher.main(args);
 
-        // Generate test data
         prepareData();
     }
 

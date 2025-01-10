@@ -63,7 +63,7 @@ final class TestGatewayHaMultipleBackend
 
     private TrinoContainer adhocTrino;
     private TrinoContainer scheduledTrino;
-    private PostgreSQLContainer postgresql;
+    private final PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16");
 
     public static String oauthInitiatePath = OAuth2GatewayCookie.OAUTH2_PATH;
     public static String oauthCallbackPath = oauthInitiatePath + "/callback";
@@ -87,7 +87,6 @@ final class TestGatewayHaMultipleBackend
         scheduledTrino = new TrinoContainer("trinodb/trino");
         scheduledTrino.withCopyFileToContainer(forClasspathResource("trino-config.properties"), "/etc/trino/config.properties");
         scheduledTrino.start();
-        postgresql = new PostgreSQLContainer("postgres:16");
         postgresql.start();
 
         int backend1Port = adhocTrino.getMappedPort(8080);

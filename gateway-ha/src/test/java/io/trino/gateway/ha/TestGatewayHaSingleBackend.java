@@ -40,7 +40,7 @@ import static org.testcontainers.utility.MountableFile.forClasspathResource;
 final class TestGatewayHaSingleBackend
 {
     private TrinoContainer trino;
-    private PostgreSQLContainer postgresql;
+    private final PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16");
     int routerPort = 21001 + (int) (Math.random() * 1000);
 
     @BeforeAll
@@ -53,8 +53,6 @@ final class TestGatewayHaSingleBackend
 
         int backendPort = trino.getMappedPort(8080);
 
-        // start postgres database
-        postgresql = new PostgreSQLContainer("postgres:16");
         postgresql.start();
         HaGatewayTestUtils.TestConfig testConfig =
                 HaGatewayTestUtils.buildGatewayConfig(routerPort, "test-config-template.yml", postgresql);

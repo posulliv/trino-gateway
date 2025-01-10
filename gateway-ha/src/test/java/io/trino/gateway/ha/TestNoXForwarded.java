@@ -36,7 +36,7 @@ final class TestNoXForwarded
 {
     private final OkHttpClient httpClient = new OkHttpClient();
     private TrinoContainer trino;
-    private PostgreSQLContainer postgresql;
+    private final PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16");
     int routerPort = 21001 + (int) (Math.random() * 1000);
     int backendPort;
 
@@ -50,7 +50,6 @@ final class TestNoXForwarded
 
         backendPort = trino.getMappedPort(8080);
 
-        postgresql = new PostgreSQLContainer("postgres:16");
         postgresql.start();
 
         HaGatewayTestUtils.TestConfig testConfig =

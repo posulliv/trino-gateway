@@ -35,7 +35,7 @@ final class TestGatewayHaWithRoutingRulesSingleBackend
 {
     private final OkHttpClient httpClient = new OkHttpClient();
     private TrinoContainer trino;
-    private PostgreSQLContainer postgresql;
+    private final PostgreSQLContainer postgresql = new PostgreSQLContainer("postgres:16");
     int routerPort = 21001 + (int) (Math.random() * 1000);
 
     @BeforeAll
@@ -45,7 +45,6 @@ final class TestGatewayHaWithRoutingRulesSingleBackend
         trino = new TrinoContainer("trinodb/trino");
         trino.withCopyFileToContainer(forClasspathResource("trino-config.properties"), "/etc/trino/config.properties");
         trino.start();
-        postgresql = new PostgreSQLContainer("postgres:16");
         postgresql.start();
 
         int backendPort = trino.getMappedPort(8080);
